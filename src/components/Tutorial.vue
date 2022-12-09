@@ -16,10 +16,14 @@
           <td>{{ todoItem.id }}</td>
           <td>{{ todoItem.comment }}</td>
           <td class="buttonChangeState">
-            <button>{{ todoItem.state }}</button>
+            <button @click="doChangeState(todoItem)">
+              {{ todoItem.state }}
+            </button>
           </td>
           <td class="buttonDelete">
-            <button>delete</button>
+            <button @click="doDelete(todoItem)">
+              delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -73,6 +77,13 @@ export default {
       // 追加したら次の準備
       this.uid++
       comment.value = ''
+    },
+    doChangeState (item) {
+      item.state = item.state ? 0 : 1
+    },
+    doDelete (item) {
+      const deleteIndex = this.todos.indexOf(item)
+      this.todos.splice(deleteIndex,1)
     }
   }
 }
