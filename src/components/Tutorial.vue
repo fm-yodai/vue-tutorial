@@ -5,8 +5,8 @@
       <thead>
       <tr>
         <th class="id">ID</th>
-        <th class="comment">コメント</th>
-        <th class="state">状態</th>
+        <th class="comment">comment</th>
+        <th class="state">state</th>
         <th class="button">-</th>
       </tr>
       </thead>
@@ -19,11 +19,17 @@
             <button>{{ todoItem.state }}</button>
           </td>
           <td class="buttonDelete">
-            <button>削除</button>
+            <button>delete</button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <h2>new task</h2>
+    <form class="add-form" @submit.prevent="doAdd">
+      comment <input type="text" ref="comment">
+      <button type="submit">add</button>
+    </form>
   </div>
 </template>
 
@@ -32,7 +38,27 @@ export default {
   name: 'Tutorial',
   data () {
     return {
-      todos: []
+      todos: [],
+      uid:0
+    }
+  },
+  methods: {
+    doAdd (event, value) {
+      var comment = this.$refs.comment
+
+      // フォームが空でAddボタンを押しても何も起こらない
+      if (!comment.value.length) {
+        return
+      }
+      this.todos.push({
+        id: this.uid,
+        comment: comment.value,
+        state: 0
+      })
+
+      // 追加したら次の準備
+      this.uid++
+      comment.value = ''
     }
   }
 }
