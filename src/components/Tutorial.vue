@@ -34,12 +34,26 @@
 </template>
 
 <script>
+import todoStorage from '../plugins/todoStorage'
+
 export default {
   name: 'Tutorial',
   data () {
     return {
       todos: [],
       uid:0
+    }
+  },
+  created () {
+    this.todos = todoStorage.fetch()
+    this.uid = this.todos.length
+  },
+  watch: {
+    todos: {
+      handler: function (todos) {
+        todoStorage.save(todos)
+      },
+      deep: true
     }
   },
   methods: {
