@@ -1,5 +1,10 @@
 <template>
   <div>
+    <label v-for="label in filterOptions" v-bind:key="label.value">
+      <input type="radio"
+        v-model="currentFilterOption"
+        v-bind:value="label.value">{{ label.value }}
+    </label>
     <table>
       <!-- テーブルヘッダー -->
       <thead>
@@ -12,7 +17,7 @@
       </thead>
       <tbody>
         <!-- ここに<tr>でToDoの要素を1行ずつ表示 -->
-        <tr v-for="todoItem in todos" v-bind:key="todoItem.id">
+        <tr v-for="todoItem in filteredTodos" v-bind:key="todoItem.id">
           <td>{{ todoItem.id }}</td>
           <td>{{ todoItem.comment }}</td>
           <td class="buttonChangeState">
@@ -28,6 +33,7 @@
         </tr>
       </tbody>
     </table>
+    <p>{{ filteredTodos.length }} tasks</p>
 
     <h2>new task</h2>
     <form class="add-form" @submit.prevent="doAdd">
@@ -45,7 +51,20 @@ export default {
   data () {
     return {
       todos: [],
-      uid:0
+      uid: 0,
+      filterOptions: [
+        { value: -1, label: 'all' },
+        { value: 0, label: 'is progress' },
+        { value: 1, label: 'done' }
+      ],
+      currentFilterOption: -1
+    }
+  },
+  computed: {
+    filteredTodos () {
+      return this.todos.filter(function (item) {
+        return this.currentFilterOption < 0 ? true : this.currentFilterOption === item.state
+      }, this)
     }
   },
   created () {
@@ -83,7 +102,7 @@ export default {
     },
     doDelete (item) {
       const deleteIndex = this.todos.indexOf(item)
-      this.todos.splice(deleteIndex,1)
+      this.todos.splice(deleteIndex, 1)
     }
   }
 }
