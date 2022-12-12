@@ -3,7 +3,7 @@
     <label v-for="label in filterOptions" v-bind:key="label.value">
       <input type="radio"
         v-model="currentFilterOption"
-        v-bind:value="label.value">{{ label.value }}
+        v-bind:value="label.value">{{ label.label }}
     </label>
     <table>
       <!-- テーブルヘッダー -->
@@ -22,7 +22,7 @@
           <td>{{ todoItem.comment }}</td>
           <td class="buttonChangeState">
             <button @click="doChangeState(todoItem)">
-              {{ todoItem.state }}
+              {{ labels[todoItem.state] }}
             </button>
           </td>
           <td class="buttonDelete">
@@ -52,6 +52,7 @@ export default {
     return {
       todos: [],
       uid: 0,
+      // タスクの状態
       filterOptions: [
         { value: -1, label: 'all' },
         { value: 0, label: 'is progress' },
@@ -61,6 +62,12 @@ export default {
     }
   },
   computed: {
+    // labels[filterOptions.value]でfilterOptions.labelの値を参照できるようにする
+    labels () {
+      return this.filterOptions.reduce(function(eachFilterOption, convertedFilterOptions) {
+        return Object.assign(eachFilterOption, {[convertedFilterOptions.value]: convertedFilterOptions.label})
+      }, {})
+    },
     filteredTodos () {
       return this.todos.filter(function (item) {
         return this.currentFilterOption < 0 ? true : this.currentFilterOption === item.state
